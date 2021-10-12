@@ -8,7 +8,7 @@ from attr.validators import instance_of
 @attr.s
 class CloudwatchMetricsTarget(object):
     """
-    Generates Cloudwatch target JSON structure.
+    Generates Cloudwatch Metrics target JSON structure.
 
     Grafana docs on using Cloudwatch:
     https://grafana.com/docs/grafana/latest/datasources/cloudwatch/
@@ -56,5 +56,50 @@ class CloudwatchMetricsTarget(object):
             "refId": self.refId,
             "region": self.region,
             "statistics": self.statistics,
+            "hide": self.hide,
+        }
+
+@attr.s
+class CloudwatchLogsTarget(object):
+    """
+    Generates Cloudwatch Logs target JSON structure.
+
+    Grafana docs on using Cloudwatch:
+    https://grafana.com/docs/grafana/latest/datasources/aws-cloudwatch/#using-the-logs-query-editor
+
+    AWS docs on Cloudwatch metrics:
+    https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html
+
+    :param expression: Cloudwatch Logs query
+    :param id: unique id
+    :param logGroupNames: List of CloudWatch Log Groups to query.
+    :param namespace: Cloudwatch Logs namespace
+    :param queryMode: Cloudwatch Logs queryMode
+    :param refId: target reference id
+    :param region: Cloudwatch region
+    :param statsGroups: Cloudwatch Logs statsGroups
+    :param hide: controls if given logs is displayed on visualization
+    """
+    expression = attr.ib(default="")
+    id = attr.ib(default="")
+    logGroupNames = attr.ib(default=[], validator=instance_of(list))
+    namespace = attr.ib(default="")
+    queryMode = attr.ib(default="Logs")
+    refId = attr.ib(default="")
+    region = attr.ib(default="default")
+    statsGroups = attr.ib(default=[], validator=instance_of(list))
+    hide = attr.ib(default=False, validator=instance_of(bool))
+
+    def to_json_data(self):
+
+        return {
+            "expression": self.expression,
+            "id": self.id,
+            "logGroupNames": self.logGroupNames,
+            "namespace": self.namespace,
+            "queryMode": self.queryMode,
+            "refId": self.refId,
+            "region": self.region,
+            "statsGroups": self.statsGroups,
             "hide": self.hide,
         }
